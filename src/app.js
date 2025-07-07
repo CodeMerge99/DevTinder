@@ -2,22 +2,53 @@ const express = require("express");
 const app = express();
 const connectDB = require("./config/database");
 const User = require("./models/user");
+const { validateSignUpData } = require("./utils/validation");
+const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+const{userAuth} = require("./middlewares/auth");
+
 
 app.use(express.json());
+//cookie-parser//
+app.use(cookieParser());
 
-app.post("/signup", async (req, res) => {
-  const user = new User(req.body);
-  try {
-    await user.save();
-    res.send("user created successfully");
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({
-      success: false,
-      msg: "Failed to create user",
-    });
+
+
+//login api//
+app.post("/login",async(req,res)=>{
+  const {emailId,password} = req.body;
+  const user = await User.find({emailid:emailId});
+  if(!user){
+    throw new Error("EmailId is Not valid");
   }
-});
+
+  const ispasswordvalid = await bcrypt.compare(password, user.password);
+
+  if(ispasswordvalid){
+   
+
+
+
+
+    res.cookie("token","fjbsdkfnsdlf");
+    res.send("Login successful");
+  }else{
+    throw new Error("invalid Password");
+  }
+})
+
+
+//profile api//
+app.post("/profile",userAuth,async(req,res)=>{
+   const cookies = req.cookies;
+   console.log(cookies);
+   res.send("Reading cookies");
+})
+
+
+
+
 
 //get user by emailId;
 app.get("/user", async (req, res) => {
@@ -56,24 +87,40 @@ app.delete("/user", async (req, res) => {
 
 
 //update the user data//
-app.patch("/user", async(req,res)=>{
-   const UserId = req.body.UserId;
-   const data = req.body;
-   try {
-      const userdetails = await User.findOneAndUpdate({_id:UserId}, data);
-      res.status(200).json({
-        sucees:true,
-        msg:"User Details Updated Successfully"
-      })
-      
-   } catch (error) {
-      console.error(error.message);
-      res.status(500).json({
-        suceess:false,
-        msg:"Failed to update User Details",
+app.patch("/user", async (req, res) => {
+  const UserId = req.params?.UserId;
+  const data = req.body;
+  const ALLOWED_UPDATES = ["photoUrl", "about", "age", "skills"];
+  
+  try {
+    const isUpdateAllowed = Object.keys(data).every((k) => {
+    ALLOWED_UPDATES.includes(k);
+  });
+  if (!isUpdateAllowed) {
+     throw new Error("Update Not Allowed")
+  }
+  if(data?.skills.length > 10){
+    throw new Error("More than 10 Skills cannot be added")
+  }
+    const userdetails = await User.findOneAndUpdate({ _id: UserId }, data, {
+      runValidators: true,
+    });
+    res.status(200).json({
+      sucees: true,
+      msg: "User Details Updated Successfully",
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({
+      suceess: false,
+      msg: "Failed to update User Details",
+    });
+  }
+});
 
-      })
-   }
+//sendconnection request//
+app.post("/sendconnectionrequest",userAuth, async(req,res)=>{
+   res.send("connection request sent");
 })
 
 
