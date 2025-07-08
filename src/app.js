@@ -15,36 +15,9 @@ app.use(cookieParser());
 
 
 
-//login api//
-app.post("/login",async(req,res)=>{
-  const {emailId,password} = req.body;
-  const user = await User.find({emailid:emailId});
-  if(!user){
-    throw new Error("EmailId is Not valid");
-  }
-
-  const ispasswordvalid = await bcrypt.compare(password, user.password);
-
-  if(ispasswordvalid){
-   
 
 
 
-
-    res.cookie("token","fjbsdkfnsdlf");
-    res.send("Login successful");
-  }else{
-    throw new Error("invalid Password");
-  }
-})
-
-
-//profile api//
-app.post("/profile",userAuth,async(req,res)=>{
-   const cookies = req.cookies;
-   console.log(cookies);
-   res.send("Reading cookies");
-})
 
 
 
