@@ -20,7 +20,6 @@ authRouter.post("/signup", async (req, res) => {
     const passwordHash = await bcrypt.hash(password, 10);
 
     const checkEmail = await User.findOne({ emailId });
-    console.log(checkEmail);
     if (checkEmail) {
       throw new Error("Email Already Exist");
     }

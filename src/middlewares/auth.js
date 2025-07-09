@@ -11,7 +11,7 @@ const userAuth = async(req,res,next) =>{
         throw new Error("Token is Not valid");
      }
      //verify the token//
-     const decodedobj = await jwt.verify(token,"SECRET_KEY");
+     const decodedobj = await jwt.verify(token,"Piyush@2799");
 
      const{_id } = decodedobj;
 

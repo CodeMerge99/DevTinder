@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 
 // User Model
 const userSchema = new mongoose.Schema(
@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema(
     firstName: {
       type: String,
       required: true,
+      index:true,
       minLength: 3,
       maxLenght: 50,
     },
@@ -46,11 +47,15 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: false,
       trim: true,
-      validate(value) {
-        if (!["male", "female", "others","Male", "Female", "Others"].includes(value)) {
-          throw new Error("Not a valid gender (Male , Female and other)");
-        }
-      },
+      enum:{
+        values:["male","female","others"],
+        message:`{VALUE} is not a valid gender type`
+      }
+      // validate(value) {
+      //   if (!["male", "female", "others","Male", "Female", "Others"].includes(value)) {
+      //     throw new Error("Not a valid gender (Male , Female and other)");
+      //   }
+      // },
     },
     about: {
       type: String,
@@ -79,7 +84,7 @@ userSchema.index({ firstName: 1, lastName: 1 });
 
 userSchema.methods.getjwt = async function () {
   const user = this;
-  const token = await jwt.sign({ _id: this._id }, "999@Akshad", {
+  const token = await jwt.sign({ _id: user._id }, "Piyush@2799", {
     expiresIn: "1d",
   });
 
