@@ -10,92 +10,17 @@ const{userAuth} = require("./middlewares/auth");
 
 
 app.use(express.json());
-//cookie-parser//
 app.use(cookieParser());
 
+const authRouter = require("./routes/auth");
+const profileRouter = require("./routes/profile");
+const requestRouter = require("./routes/request");
+const userRouter = require("./routes/user");
 
-
-
-
-
-
-
-
-
-
-//get user by emailId;
-app.get("/user", async (req, res) => {
-  const Useremail = req.body.email;
-  try {
-    const useremail =  await User.find({ email: Useremail });
-    res.send(useremail);
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({
-      success: false,
-      msg: "Something Went wrong",
-    });
-  }
-});
-
-
-//deleting a user by there id//
-app.delete("/user", async (req, res) => {
-  const UserId = req.body.UserId;
-  try {
-    const userid = await User.findByIdAndDelete(UserId);
-    res.status(200).json({
-      data: userid,
-      success: true,
-      msg: "User Deleted Successfully",
-    });
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({
-      suceess: false,
-      msg: "Error deleting the User",
-    });
-  }
-});
-
-
-//update the user data//
-app.patch("/user", async (req, res) => {
-  const UserId = req.params?.UserId;
-  const data = req.body;
-  const ALLOWED_UPDATES = ["photoUrl", "about", "age", "skills"];
-  
-  try {
-    const isUpdateAllowed = Object.keys(data).every((k) => {
-    ALLOWED_UPDATES.includes(k);
-  });
-  if (!isUpdateAllowed) {
-     throw new Error("Update Not Allowed")
-  }
-  if(data?.skills.length > 10){
-    throw new Error("More than 10 Skills cannot be added")
-  }
-    const userdetails = await User.findOneAndUpdate({ _id: UserId }, data, {
-      runValidators: true,
-    });
-    res.status(200).json({
-      sucees: true,
-      msg: "User Details Updated Successfully",
-    });
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({
-      suceess: false,
-      msg: "Failed to update User Details",
-    });
-  }
-});
-
-//sendconnection request//
-app.post("/sendconnectionrequest",userAuth, async(req,res)=>{
-   res.send("connection request sent");
-})
-
+app.use("/",authRouter);
+app.use("/",profileRouter);
+app.use("/",requestRouter);
+app.use("/",userRouter);
 
 connectDB()
   .then(() => {

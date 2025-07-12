@@ -15,16 +15,16 @@ const userAuth = async(req,res,next) =>{
 
      const{_id } = decodedobj;
 
-     const user = await User.findbyId(_id);
+     const user = await User.findById(_id);
      if(!user){
         throw new Error('User Not Found');
      }
      next();
      } catch(error) {
-         res.status(400).send("Error +",error.message);
+         res.status(400).send("Error "+ error.message);
      }
 }
 
 module.exports ={
-    userAuth
+    userAuth,
 }
