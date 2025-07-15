@@ -7,7 +7,9 @@ const {userAuth} = require("../middlewares/auth");
 profileRouter.get("/profile/view", userAuth, async (req, res) => {
   try {
     const user = req.user;
-    res.send(user);
+    res.status(200).json({
+      user
+    })
   } catch (error) {
     res.status(400).send("Error"+ error.message)
   }

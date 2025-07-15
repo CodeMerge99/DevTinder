@@ -1,11 +1,14 @@
 const express = require("express");
 const authRouter = express.Router();
-
+const { validateSignUpData } = require("../utils/validation");
+const bcrypt = require("bcrypt");
+const User = require("../models/user");
+const validator = require("validator");
 //signup api 
 authRouter.post("/signup", async (req, res) => {
   try {
     //Validate the data
-    validateSignupData(req);
+    validateSignUpData(req);
     const {
       firstName,
       lastName,
@@ -64,7 +67,7 @@ authRouter.post("/login", async (req, res) => {
       res.cookie("token", token, {
         expires: new Date(Date.now() + 8 * 3600000),
       });
-      res.status(200).json({ user });
+      res.status(200).json({ message:"Login Successfull!" });
     } else {
       throw new Error("Invalid Vredentials");
     }
