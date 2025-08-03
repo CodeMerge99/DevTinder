@@ -12,25 +12,35 @@ Encryption: bcryptjs for password hashing
 API Testing: Postman
 Environment Variables Management: dotenv
 Package Manager: npm
+
+
 🔑 Features Implemented
 1. Authentication System
 ✅ User Signup, Login, and Logout
+
 ✅ JWT-based authentication with secure cookies
+
 ✅ Password encryption using bcryptjs
+
 ✅ Authentication middleware to protect routes
 
-2. User Profile Management
+3. User Profile Management
 ✅ View user profile
+
 ✅ Edit profile details (restricted fields for security)
+
 ✅ Update password with validation
 
-3. Connection Request System
+5. Connection Request System
 ✅ Send connection requests (Interested or Ignored)
+
 ✅ Accept or reject received requests
+
 ✅ Prevent duplicate requests using MongoDB validation
+
 ✅ Prevent self-requests using Mongoose .pre middleware
 
-4. Feed API & Pagination
+7. Feed API & Pagination
 ✅ Fetch suggested developers while excluding:
 
 Logged-in user
@@ -38,7 +48,9 @@ Existing connections
 Ignored users
 Users with pending requests
 ✅ Implemented pagination using skip & limit
+
 ✅ Optimized query using MongoDB $nin and $ne operators
+
 5. Database Design
 ✅ User Schema:
 
@@ -56,27 +68,47 @@ Used index: true for faster queries
 Implemented compound indexes to optimize search
 7. Middleware Implementation
 ✅ Authentication Middleware: Protects private routes
+
 ✅ Error Handling Middleware: Centralized error response
+
 ✅ Mongoose .pre Middleware: Prevents self-requests
 
 
  API Endpoints
 1️⃣ Authentication Routes
 Method	Endpoint	Description	Auth Required
+
 POST	/auth/signup	Register a new user	❌
+
 POST	/auth/login	Authenticate user & issue JWT	❌
+
 POST	/auth/logout	Logout user by clearing JWT cookie	✅
+
+
+
 2️⃣ User Profile Routes
-Method	Endpoint	Description	Auth Required
+
+Method	Endpoint	Description	Auth Required'
+
 GET	/profile/view	Get logged-in user profile	✅
+
 PATCH	/profile/edit	Update allowed profile fields	✅
+
 PATCH	/profile/password	Update user password	✅
+
+
 3️⃣ Connection Request Routes
 Method	Endpoint	Description	Auth Required
+
 POST	/request/send/:status/:toUserId	Send a connection request (Interested/Ignored)	✅
+
 POST	/request/review/:status/:requestId	Accept/Reject a request	✅
+
 GET	/user/requests/received	Fetch pending connection requests	✅
+
 GET	/user/connections	Fetch accepted connections	✅
+
+
 4️⃣ Feed API & Pagination
 Method	Endpoint	Description	Auth Required
 GET	/user/feed?page=1&limit=10	Get suggested developer profiles with pagination	✅
